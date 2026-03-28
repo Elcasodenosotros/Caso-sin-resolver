@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caso Sin Resolver</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0c09;
+  --paper: #f5f0e0;
+  --ink: #1a1508;
+  --blood: #8b1a1a;
+  --gold: #c9a227;
+  --smoke: #6b6456;
+  --dim: #2a2318;
+  --stamp: #5c1a1a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--paper); font-family:'Courier Prime',monospace; min-height:100vh; overflow-x:hidden; cursor:default; }
+
+/* GRAIN */
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"); pointer-events:none; z-index:998; }
+
+/* ── COVER ── */
+#cover {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px 24px;
+  text-align:center;
+  background: radial-gradient(ellipse at 50% 30%, #2a1e0a 0%, #0e0c09 65%);
+  position:relative;
+}
+
+.case-stamp {
+  font-family:'Special Elite',cursive;
+  font-size:10px;
+  letter-spacing:0.5em;
+  text-transform:uppercase;
+  color:var(--blood);
+  border:2px solid var(--blood);
+  padding:6px 20px;
+  margin-bottom:40px;
+  display:inline-block;
+  transform:rotate(-2deg);
+  opacity:0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.case-number {
+  font-family:'Courier Prime',monospace;
+  font-size:9px;
+  letter-spacing:0.4em;
+  color:var(--smoke);
+  margin-bottom:16px;
+  opacity:0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.cover-title {
+  opacity:0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+  margin-bottom:8px;
+}
+
+.cover-title .caso {
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(14px,4vw,22px);
+  font-weight:400;
+  font-style:italic;
+  color:var(--smoke);
+  display:block;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+
+.cover-title .sin {
+  font-family:'Special Elite',cursive;
+  font-size:clamp(56px,18vw,120px);
+  color:var(--paper);
+  display:block;
+  line-height:0.85;
+  letter-spacing:-2px;
+}
+
+.cover-title .resolver {
+  font-family:'Special Elite',cursive;
+  font-size:clamp(32px,10vw,68px);
+  color:var(--gold);
+  display:block;
+  letter-spacing:0.05em;
+}
+
+.cover-divider {
+  width:80px;
+  height:1px;
+  background:linear-gradient(to right, transparent, var(--gold), transparent);
+  margin:32px auto;
+  opacity:0;
+  animation: fadeIn 1s ease 1.2s forwards;
+}
+
+.cover-desc {
+  font-family:'Libre Baskerville',serif;
+  font-size:15px;
+  font-style:italic;
+  color:rgba(245,240,224,0.5);
+  max-width:300px;
+  line-height:1.8;
+  opacity:0;
+  animation: fadeUp 0.8s ease 1.4s forwards;
+  margin-bottom:48px;
+}
+
+.cover-tags {
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:40px;
+  opacity:0;
+  animation: fadeUp 0.8s ease 1.6s forwards;
+}
+
+.ctag {
+  font-family:'Courier Prime',monospace;
+  font-size:9px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  padding:5px 12px;
+  border:1px solid rgba(201,162,39,0.3);
+  color:var(--smoke);
+}
+
+.open-btn {
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'Special Elite',cursive;
+  font-size:14px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  padding:16px 40px;
+  cursor:pointer;
+  transition:all 0.3s;
+  opacity:0;
+  animation: fadeUp 0.8s ease 1.8s forwards;
+  position:relative;
+}
+.open-btn:hover { background:var(--gold); color:var(--ink); }
+
+/* ── BRIEFING ── */
+#briefing {
+  display:none;
+  min-height:100vh;
+  background: #0e0c09;
+  padding:48px 24px;
+  flex-direction:column;
+  align-items:center;
+}
+
+.brief-header { text-align:center; margin-bottom:40px; width:100%; }
+.brief-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.5em; text-transform:uppercase; color:var(--blood); display:block; margin-bottom:8px; }
+.brief-title { font-family:'Special Elite',cursive; font-size:clamp(28px,8vw,48px); color:var(--paper); }
+
+.case-file {
+  background:var(--paper);
+  color:var(--ink);
+  max-width:500px;
+  width:100%;
+  padding:32px 28px;
+  position:relative;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.5), 8px 8px 0 rgba(0,0,0,0.3);
+  margin-bottom:32px;
+}
+
+.case-file::before {
+  content:'CONFIDENCIAL';
+  position:absolute;
+  top:16px;
+  right:16px;
+  font-family:'Special Elite',cursive;
+  font-size:10px;
+  letter-spacing:0.2em;
+  color:var(--blood);
+  border:1px solid var(--blood);
+  padding:3px 8px;
+  transform:rotate(3deg);
+}
+
+.file-section { margin-bottom:24px; }
+.file-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--smoke); border-bottom:1px solid rgba(28,21,8,0.2); padding-bottom:6px; margin-bottom:10px; }
+.file-text { font-family:'Libre Baskerville',serif; font-size:14px; line-height:1.8; color:var(--ink); }
+.file-text strong { font-weight:700; }
+
+.suspect-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px; }
+.suspect-card { background:rgba(28,21,8,0.08); border:1px solid rgba(28,21,8,0.15); padding:12px; }
+.suspect-name { font-family:'Special Elite',cursive; font-size:14px; color:var(--ink); margin-bottom:4px; }
+.suspect-role { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--smoke); }
+
+.start-invest-btn {
+  max-width:500px;
+  width:100%;
+  background:var(--blood);
+  border:none;
+  color:var(--paper);
+  font-family:'Special Elite',cursive;
+  font-size:14px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  padding:18px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.start-invest-btn:hover { background:#a82020; }
+
+/* ── INVESTIGATION ── */
+#investigation { display:none; min-height:100vh; flex-direction:column; background:#0e0c09; }
+
+.inv-header {
+  padding:24px 24px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.inv-case { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--smoke); }
+.inv-phase { font-family:'Special Elite',cursive; font-size:18px; color:var(--gold); }
+
+.clue-counter { font-family:'Courier Prime',monospace; font-size:9px; color:var(--smoke); text-align:right; }
+
+.phase-bar { height:2px; background:rgba(255,255,255,0.06); margin:16px 24px 0; }
+.phase-fill { height:100%; background:var(--gold); transition:width 0.5s ease; }
+
+.clue-area { flex:1; padding:24px; display:flex; flex-direction:column; justify-content:center; }
+
+.clue-card {
+  background:var(--paper);
+  color:var(--ink);
+  padding:28px 24px;
+  position:relative;
+  box-shadow:3px 3px 0 rgba(0,0,0,0.4);
+  min-height:200px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.clue-type {
+  font-family:'Courier Prime',monospace;
+  font-size:8px;
+  letter-spacing:0.5em;
+  text-transform:uppercase;
+  color:var(--smoke);
+  margin-bottom:16px;
+  display:block;
+}
+
+.clue-number {
+  position:absolute;
+  top:12px;
+  right:16px;
+  font-family:'Special Elite',cursive;
+  font-size:32px;
+  color:rgba(28,21,8,0.08);
+  line-height:1;
+}
+
+.clue-text {
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(16px,4.5vw,22px);
+  font-style:italic;
+  line-height:1.5;
+  color:var(--ink);
+  margin-bottom:16px;
+}
+
+.clue-action {
+  font-family:'Courier Prime',monospace;
+  font-size:11px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--blood);
+  border-top:1px solid rgba(28,21,8,0.15);
+  padding-top:12px;
+  margin-top:8px;
+}
+
+.clue-empty {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:200px;
+  gap:12px;
+}
+
+.clue-empty-icon { font-size:40px; opacity:0.3; }
+.clue-empty-text { font-family:'Libre Baskerville',serif; font-style:italic; color:var(--smoke); font-size:16px; }
+
+.inv-actions { display:flex; gap:12px; padding:0 24px 32px; }
+
+.inv-btn-main {
+  flex:2;
+  background:var(--gold);
+  border:none;
+  color:var(--ink);
+  font-family:'Special Elite',cursive;
+  font-size:13px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  padding:16px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.inv-btn-main:hover { opacity:0.85; }
+
+.inv-btn-sec {
+  flex:1;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.1);
+  color:var(--smoke);
+  font-family:'Courier Prime',monospace;
+  font-size:10px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  padding:16px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.inv-btn-sec:hover { border-color:var(--gold); color:var(--paper); }
+
+/* PHASE BADGE */
+.phase-badge {
+  background:rgba(201,162,39,0.15);
+  border:1px solid rgba(201,162,39,0.3);
+  border-left:3px solid var(--gold);
+  padding:12px 16px;
+  margin:0 24px 16px;
+  font-family:'Courier Prime',monospace;
+  font-size:10px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+}
+
+/* ── ACCUSATION ── */
+#accusation {
+  display:none;
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px 24px;
+  background: radial-gradient(ellipse at 50% 30%, #2a0a0a 0%, #0e0c09 70%);
+  text-align:center;
+}
+
+.acc-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.5em; text-transform:uppercase; color:var(--blood); margin-bottom:16px; display:block; }
+.acc-title { font-family:'Special Elite',cursive; font-size:clamp(32px,9vw,60px); color:var(--paper); margin-bottom:8px; line-height:1; }
+.acc-sub { font-family:'Libre Baskerville',serif; font-style:italic; color:var(--smoke); font-size:16px; margin-bottom:40px; }
+
+.suspect-select { display:flex; flex-direction:column; gap:12px; width:100%; max-width:400px; margin-bottom:32px; }
+
+.suspect-option {
+  background:rgba(245,240,224,0.05);
+  border:1px solid rgba(245,240,224,0.1);
+  padding:18px 20px;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.suspect-option:hover { border-color:var(--gold); background:rgba(201,162,39,0.08); }
+.suspect-option.selected { border-color:var(--blood); background:rgba(139,26,26,0.15); }
+
+.so-icon { font-size:24px; }
+.so-name { font-family:'Special Elite',cursive; font-size:16px; color:var(--paper); display:block; }
+.so-role { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--smoke); }
+
+.acc-btn {
+  background:var(--blood);
+  border:none;
+  color:var(--paper);
+  font-family:'Special Elite',cursive;
+  font-size:14px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  padding:18px 48px;
+  cursor:pointer;
+  transition:all 0.2s;
+  width:100%;
+  max-width:400px;
+}
+.acc-btn:hover { background:#a82020; }
+.acc-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+/* ── VERDICT ── */
+#verdict {
+  display:none;
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px 24px;
+  text-align:center;
+}
+
+.verdict-stamp {
+  font-family:'Special Elite',cursive;
+  font-size:clamp(40px,12vw,80px);
+  font-weight:700;
+  line-height:1;
+  margin-bottom:24px;
+  display:block;
+}
+
+.verdict-correct .verdict-stamp { color:#4a9a5a; }
+.verdict-wrong .verdict-stamp { color:var(--blood); }
+
+.verdict-title { font-family:'Libre Baskerville',serif; font-size:clamp(18px,5vw,28px); font-style:italic; color:var(--paper); margin-bottom:16px; }
+.verdict-reveal { font-family:'Courier Prime',monospace; font-size:13px; color:var(--smoke); line-height:1.8; max-width:400px; margin:0 auto 32px; }
+
+.verdict-box {
+  background:var(--paper);
+  color:var(--ink);
+  padding:28px 24px;
+  max-width:400px;
+  width:100%;
+  margin-bottom:32px;
+  text-align:left;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.4);
+}
+
+.vb-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--smoke); border-bottom:1px solid rgba(28,21,8,0.2); padding-bottom:6px; margin-bottom:12px; }
+.vb-text { font-family:'Libre Baskerville',serif; font-size:14px; line-height:1.8; color:var(--ink); font-style:italic; }
+
+.restart-btn {
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.15);
+  color:var(--smoke);
+  font-family:'Courier Prime',monospace;
+  font-size:10px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  padding:14px 32px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.restart-btn:hover { border-color:var(--gold); color:var(--paper); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes cardReveal { from{opacity:0;transform:translateY(10px) rotate(-0.5deg)} to{opacity:1;transform:translateY(0) rotate(0)} }
+.card-reveal { animation:cardReveal 0.4s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ COVER ═══════ -->
+<div id="cover">
+  <span class="case-stamp">★ Expediente Especial</span>
+  <div class="case-number">Caso #001 — Para Parejas Detectives</div>
+  <div class="cover-title">
+    <span class="caso">Un caso</span>
+    <span class="sin">SIN</span>
+    <span class="resolver">Resolver</span>
+  </div>
+  <div class="cover-divider"></div>
+  <p class="cover-desc">Un crimen. Cuatro sospechosos. Solo ustedes pueden resolverlo.</p>
+  <div class="cover-tags">
+    <span class="ctag">🕵️ 2 detectives</span>
+    <span class="ctag">🔍 Pistas reales</span>
+    <span class="ctag">💀 Misterio oscuro</span>
+    <span class="ctag">⏱️ 45-60 min</span>
+  </div>
+  <button class="open-btn" onclick="showScreen('briefing')">Abrir expediente →</button>
+</div>
+
+<!-- ═══════ BRIEFING ═══════ -->
+<div id="briefing">
+  <div class="brief-header">
+    <span class="brief-label">Expediente confidencial</span>
+    <h2 class="brief-title">El caso Villarreal</h2>
+  </div>
+
+  <div class="case-file">
+    <div class="file-section">
+      <div class="file-label">El crimen</div>
+      <p class="file-text">
+        La noche del viernes, el millonario <strong>Rodrigo Villarreal</strong> apareció muerto en su mansión. La causa: envenenamiento. El círculo de sospechosos es pequeño — todos estaban presentes esa noche. Nadie llama a la policía. Todos tienen algo que ocultar.
+      </p>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Su misión</div>
+      <p class="file-text">
+        Analicen las pistas, descubran las mentiras y acusen al culpable. Trabajen juntos — o duden el uno del otro. El caso no se resuelve solo.
+      </p>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Los sospechosos</div>
+      <div class="suspect-grid">
+        <div class="suspect-card">
+          <div class="suspect-name">🥀 Elena Voss</div>
+          <div class="suspect-role">La amante secreta</div>
+        </div>
+        <div class="suspect-card">
+          <div class="suspect-name">🃏 Marco Ríos</div>
+          <div class="suspect-role">El socio traicionado</div>
+        </div>
+        <div class="suspect-card">
+          <div class="suspect-name">⚗️ Dr. Adrián Soto</div>
+          <div class="suspect-role">El médico personal</div>
+        </div>
+        <div class="suspect-card">
+          <div class="suspect-name">👁️ Camila Vidal</div>
+          <div class="suspect-role">La hija mayor</div>
+        </div>
+      </div>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Reglas del caso</div>
+      <p class="file-text">
+        Lean cada pista en voz alta. Discutan, duden, confronten. Al final acusan a UN sospechoso. Solo uno de ustedes puede presentar la acusación final.
+      </p>
+    </div>
+  </div>
+
+  <button class="start-invest-btn" onclick="startInvestigation()">Iniciar investigación →</button>
+</div>
+
+<!-- ═══════ INVESTIGATION ═══════ -->
+<div id="investigation">
+  <div class="inv-header">
+    <div>
+      <div class="inv-case">Caso Villarreal · Activo</div>
+      <div class="inv-phase" id="phase-name">Fase I — Escena del crimen</div>
+    </div>
+    <div class="clue-counter" id="clue-counter">Pista 1 de 5</div>
+  </div>
+  <div class="phase-bar"><div class="phase-fill" id="phase-fill" style="width:0%"></div></div>
+  <div class="phase-badge" id="phase-badge">🔍 Fase I — Examinen la escena con atención</div>
+  <div class="clue-area">
+    <div id="clue-display" class="clue-empty">
+      <span class="clue-empty-icon">🔍</span>
+      <span class="clue-empty-text">Cargando primera pista...</span>
+    </div>
+  </div>
+  <div class="inv-actions">
+    <button class="inv-btn-sec" onclick="prevClue()">← Anterior</button>
+    <button class="inv-btn-main" id="next-clue-btn" onclick="nextClue()">Siguiente pista →</button>
+  </div>
+</div>
+
+<!-- ═══════ ACCUSATION ═══════ -->
+<div id="accusation">
+  <span class="acc-label">Momento de la verdad</span>
+  <h2 class="acc-title">La acusación</h2>
+  <p class="acc-sub">Han analizado todas las pistas. ¿Quién mató a Rodrigo Villarreal?</p>
+
+  <div class="suspect-select">
+    <div class="suspect-option" onclick="selectSuspect('elena')">
+      <span class="so-icon">🥀</span>
+      <div>
+        <span class="so-name">Elena Voss</span>
+        <span class="so-role">La amante secreta</span>
+      </div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('marco')">
+      <span class="so-icon">🃏</span>
+      <div>
+        <span class="so-name">Marco Ríos</span>
+        <span class="so-role">El socio traicionado</span>
+      </div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('adrian')">
+      <span class="so-icon">⚗️</span>
+      <div>
+        <span class="so-name">Dr. Adrián Soto</span>
+        <span class="so-role">El médico personal</span>
+      </div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('camila')">
+      <span class="so-icon">👁️</span>
+      <div>
+        <span class="so-name">Camila Vidal</span>
+        <span class="so-role">La hija mayor</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-btn" id="acc-btn" disabled onclick="revealVerdict()">Presentar acusación →</button>
+</div>
+
+<!-- ═══════ VERDICT ═══════ -->
+<div id="verdict"></div>
+
+<script>
+const CULPRIT = 'adrian';
+
+const clues = [
+  // FASE I — Escena del crimen
+  {
+    phase: 'Fase I — Escena del crimen',
+    badge: '🔍 Fase I — Examinen la escena con atención',
+    type: 'Evidencia física',
+    text: 'El cuerpo de Rodrigo fue encontrado en su estudio privado. La copa de vino a su lado tenía residuos de una sustancia desconocida. La botella, sin embargo, estaba limpia. Alguien sirvió el veneno directamente en la copa.',
+    action: '→ Discutan: ¿quién tuvo acceso al estudio esa noche?'
+  },
+  {
+    phase: 'Fase I — Escena del crimen',
+    badge: '🔍 Fase I — Examinen la escena con atención',
+    type: 'Detalle sospechoso',
+    text: 'En el escritorio había una carta a medias. Solo se alcanza a leer: "Sé lo que hiciste en el hospital de..." El resto fue quemado. Las cenizas todavía estaban calientes cuando llegaron los primeros en el lugar.',
+    action: '→ ¿Quién querría destruir esa información?'
+  },
+  {
+    phase: 'Fase I — Escena del crimen',
+    badge: '🔍 Fase I — Examinen la escena con atención',
+    type: 'Testimonio — Mayordomo',
+    text: 'El mayordomo declara que vio al Dr. Adrián Soto entrar al estudio a las 22:47. Cinco minutos después salió con prisa, sin decir una palabra. Era la última persona en verlo con vida.',
+    action: '→ ¿Es suficiente para sospechar del médico?'
+  },
+  // FASE II — Los sospechosos
+  {
+    phase: 'Fase II — Los sospechosos',
+    badge: '👥 Fase II — Analicen a cada sospechoso',
+    type: 'Perfil — Elena Voss',
+    text: 'Elena era la amante de Rodrigo desde hacía 3 años. Esa noche llegó sin invitación y discutió con él en el jardín. Los vecinos escucharon gritos. Ella jura que se fue a las 21:00 — pero su auto fue visto en la entrada a las 23:15.',
+    action: '→ ¿Miente Elena sobre su coartada?'
+  },
+  {
+    phase: 'Fase II — Los sospechosos',
+    badge: '👥 Fase II — Analicen a cada sospechoso',
+    type: 'Perfil — Marco Ríos',
+    text: 'Marco descubrió hace dos semanas que Rodrigo lo había estafado por 4 millones. Tenía motivo, pero también coartada: tres testigos lo vieron en un restaurante hasta las 23:30. Sin embargo, el restaurante queda a solo 8 minutos de la mansión.',
+    action: '→ ¿Alcanzó el tiempo para ir y volver?'
+  },
+  {
+    phase: 'Fase II — Los sospechosos',
+    badge: '👥 Fase II — Analicen a cada sospechoso',
+    type: 'Perfil — Dr. Adrián Soto',
+    text: 'El médico personal de Rodrigo tenía acceso a su historial completo — y a su medicación. Tres meses atrás, Rodrigo amenazó con denunciarlo por negligencia en un caso que costó la vida de un paciente. El Dr. Soto tenía mucho que perder.',
+    action: '→ El médico conoce los venenos. ¿Y los usó?'
+  },
+  {
+    phase: 'Fase II — Los sospechosos',
+    badge: '👥 Fase II — Analicen a cada sospechosos',
+    type: 'Perfil — Camila Vidal',
+    text: 'La hija mayor iba a ser desheredada. Rodrigo había cambiado su testamento esa misma semana, dejándole todo a una fundación. Camila lo sabía — su abogado le había filtrado la información. Esa noche estaba en la mansión "de visita".',
+    action: '→ ¿El dinero es suficiente razón?'
+  },
+  // FASE III — Pistas clave
+  {
+    phase: 'Fase III — Las pistas clave',
+    badge: '⚠️ Fase III — Las pistas que lo cambian todo',
+    type: 'Pista crítica #1',
+    text: 'El toxicólogo confirma: el veneno usado fue digoxina en dosis masiva. Es un medicamento cardíaco de uso controlado — prácticamente imposible de conseguir sin receta médica. Solo el Dr. Soto tenía acceso directo a ese fármaco en las cantidades necesarias.',
+    action: '→ Esta pista cambia todo. ¿Qué piensan ahora?'
+  },
+  {
+    phase: 'Fase III — Las pistas clave',
+    badge: '⚠️ Fase III — Las pistas que lo cambian todo',
+    type: 'Pista crítica #2',
+    text: 'En el bolsillo del saco del Dr. Soto se encontró una servilleta con la palabra "HECHO" escrita a mano. La caligrafía coincide con la suya. En su maletín médico faltaba un frasco de digoxina que figuraba en el inventario de la semana anterior.',
+    action: '→ ¿Es suficiente evidencia para acusar?'
+  },
+  {
+    phase: 'Fase III — Las pistas clave',
+    badge: '⚠️ Fase III — Las pistas que lo cambian todo',
+    type: 'Pista final — El móvil',
+    text: 'El archivo quemado era una denuncia formal contra el Dr. Soto. Rodrigo la había preparado para presentarla el lunes. De haberlo hecho, el médico habría perdido su licencia, enfrentado cargos penales y una demanda millonaria. Tenía todo para perder — y solo una noche para actuar.',
+    action: '→ Ya tienen todas las pistas. Es momento de acusar.'
+  }
+];
+
+let state = { current: 0, selected: null };
+
+function showScreen(id) {
+  ['cover','briefing','investigation','accusation','verdict'].forEach(s => {
+    const el = document.getElementById(s);
+    if(el) el.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  if(target) {
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
+    window.scrollTo(0,0);
+  }
+}
+
+function startInvestigation() {
+  showScreen('investigation');
+  renderClue();
+}
+
+function renderClue() {
+  const c = clues[state.current];
+  const pct = ((state.current + 1) / clues.length) * 100;
+  document.getElementById('phase-fill').style.width = pct + '%';
+  document.getElementById('phase-name').textContent = c.phase;
+  document.getElementById('phase-badge').textContent = c.badge;
+  document.getElementById('clue-counter').textContent = `Pista ${state.current + 1} de ${clues.length}`;
+  document.getElementById('next-clue-btn').textContent = state.current < clues.length - 1 ? 'Siguiente pista →' : 'Hacer la acusación →';
+
+  const display = document.getElementById('clue-display');
+  display.className = 'clue-card card-reveal';
+  display.innerHTML = `
+    <span class="clue-type">— ${c.type} —</span>
+    <span class="clue-number">${String(state.current + 1).padStart(2,'0')}</span>
+    <div class="clue-text">"${c.text}"</div>
+    <div class="clue-action">${c.action}</div>
+  `;
+}
+
+function nextClue() {
+  if(state.current < clues.length - 1) {
+    state.current++;
+    renderClue();
+  } else {
+    showScreen('accusation');
+  }
+}
+
+function prevClue() {
+  if(state.current > 0) {
+    state.current--;
+    renderClue();
+  }
+}
+
+function selectSuspect(s) {
+  state.selected = s;
+  document.querySelectorAll('.suspect-option').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('acc-btn').disabled = false;
+}
+
+function revealVerdict() {
+  const correct = state.selected === CULPRIT;
+  const verdict = document.getElementById('verdict');
+  verdict.className = correct ? 'verdict-correct' : 'verdict-wrong';
+
+  verdict.innerHTML = `
+    <span class="verdict-stamp">${correct ? '✓ CORRECTO' : '✗ INCORRECTO'}</span>
+    <h2 class="verdict-title">${correct ? '¡Caso resuelto! El Dr. Soto es culpable.' : 'El culpable era el Dr. Adrián Soto.'}</h2>
+    <p class="verdict-reveal">${correct ? 'Excelente trabajo, detectives. Su análisis fue impecable.' : 'Las pistas llevaban al médico. Revisá la evidencia de la digoxina y la servilleta.'}</p>
+    <div class="verdict-box">
+      <div class="vb-label">La verdad del caso</div>
+      <p class="vb-text">
+        El Dr. Adrián Soto envenenó a Rodrigo Villarreal con digoxina esa noche. Sabía que la denuncia lo destruiría. Aprovechó su visita habitual, sirvió el veneno en la copa directamente y se retiró antes de que nadie sospechara. La servilleta con la palabra "HECHO" fue su único error — la guardó en el bolsillo por costumbre, sin darse cuenta.
+      </p>
+    </div>
+    <button class="restart-btn" onclick="location.reload()">↺ Nuevo caso</button>
+  `;
+
+  showScreen('verdict');
+}
+</script>
+</body>
+</html>
